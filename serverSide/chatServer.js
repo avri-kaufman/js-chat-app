@@ -5,17 +5,27 @@ const server = http.createServer(app);
 const { Server } = require("socket.io");
 const io = new Server(server);
 
+app.use(express.urlencoded({ extended: true }));
+
 app.get("/", (req, res) => {
   res.sendFile(
     "C:/Users/avika/Desktop/gettJob/projects/chatApplication/clientSide/pages/index.html"
   );
 });
 
-app.get("/name", (req, res) => {
+app.post("/chat", (req, res) => {
+  const name = req.body.name;
+  console.log(name);
   res.sendFile(
     "C:/Users/avika/Desktop/gettJob/projects/chatApplication/clientSide/pages/chat.html"
   );
 });
+
+// app.get("/chat", (req, res) => {
+//   res.sendFile(
+//     "C:/Users/avika/Desktop/gettJob/projects/chatApplication/clientSide/pages/chat.html"
+//   );
+// });
 
 io.on("connection", (Socket) => {
   Socket.broadcast.emit("chat message", "new user connected");
