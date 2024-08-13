@@ -55,9 +55,25 @@
       #messages > li:nth-child(odd) {
         background: #efefef;
       }
+      /*  */
+      #connectedUsers {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+      }
+      #connectedUsers > li {
+        padding: 0.5rem 1rem;
+      }
+      #connectedUsers > li:nth-child(odd) {
+        background: #efefef;
+      }
     </style>
   </head>
   <body>
+    <h2>connected users</h2>
+    <ul id="connectedUsers"></ul>
+    <hr />
+    <h2>message</h2>
     <ul id="messages"></ul>
     <form id="form" action="">
       <input id="input" autocomplete="off" />
@@ -83,6 +99,13 @@
         var item = document.createElement("li");
         item.textContent = msg;
         messages.appendChild(item);
+        window.scrollTo(0, document.body.scrollHeight);
+      });
+
+      socket.on("user connected", function (msg) {
+        var item = document.createElement("li");
+        item.textContent = msg;
+        connectedUsers.appendChild(item);
         window.scrollTo(0, document.body.scrollHeight);
       });
     </script>
