@@ -5,6 +5,8 @@ const server = http.createServer(app);
 const { Server } = require("socket.io");
 const io = new Server(server);
 
+let CONNECTED_USERS = {};
+
 app.get("/", (req, res) => {
   res.sendFile(
     "C:/Users/avika/Desktop/gettJob/projects/chatApplication/clientSide/pages/index.html"
@@ -19,7 +21,13 @@ app.post("/chat", (req, res) => {
   );
 
   io.once("connection", (socket) => {
+    CONNECTED_USERS[socket.id] = name;
     socket.broadcast.emit("user connected", `${name}`);
+
+    socket.on("disconnect", () => {
+      socket.broadcast.emit("user disconnected", `${name} has left the chat`);
+      delete CONNECTED_USERS[socket.id];
+    });
   });
 });
 
