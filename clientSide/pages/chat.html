@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>chat app</title>
+    <title>Chat app</title>
     <!--T0DO: replace style tag with the css file by link tag  -->
     <!-- <link rel="stylesheet" href="../style/style.css" /> -->
     <style>
@@ -86,12 +86,25 @@
       var messages = document.getElementById("messages");
       var form = document.getElementById("form");
       var input = document.getElementById("input");
+      // let connectedUsersMap = {};
 
       form.addEventListener("submit", function (e) {
         e.preventDefault();
         if (input.value) {
           socket.emit("chat message", input.value);
           input.value = "";
+        }
+      });
+
+      socket.on("connected users", function (connectedUsersDict) {
+        console.log("conn hello");
+        for (let userId in connectedUsersDict) {
+          // let userName = connectedUsersDict[userId];
+          var item = document.createElement("li");
+          item.setAttribute("id", userId);
+          item.textContent = connectedUsersDict.userId;
+          connectedUsers.appendChild(item);
+          window.scrollTo(0, document.body.scrollHeight);
         }
       });
 
@@ -102,10 +115,20 @@
         window.scrollTo(0, document.body.scrollHeight);
       });
 
-      socket.on("user connected", function (msg) {
+      socket.on("user connected", function (newUser) {
         var item = document.createElement("li");
-        item.textContent = msg;
+        item.setAttribute("id", userId);
+        item.textContent = newUser.userId;
         connectedUsers.appendChild(item);
+        window.scrollTo(0, document.body.scrollHeight);
+      });
+
+      socket.on("user disconnected", function (userId) {
+        // var item = document.createElement("li");
+        // item.textContent = newUser.userId + " has left the room";
+        // messages.appendChild(item);
+        var disconnectedUser = document.getElementById(userId);
+        disconnectedUser.parentNode.removeChild(disconnectedUser);
         window.scrollTo(0, document.body.scrollHeight);
       });
     </script>

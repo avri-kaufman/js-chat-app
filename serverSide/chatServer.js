@@ -21,12 +21,14 @@ app.post("/chat", (req, res) => {
   );
 
   io.once("connection", (socket) => {
-    CONNECTED_USERS[socket.id] = name;
-    socket.broadcast.emit("user connected", `${name}`);
+    let userId = socket.id;
+    socket.broadcast.emit("user connected", { userId: name });
+    io.to(userId).emit("connected users", CONNECTED_USERS);
+    CONNECTED_USERS[userId] = name;
 
     socket.on("disconnect", () => {
-      socket.broadcast.emit("user disconnected", `${name} has left the chat`);
-      delete CONNECTED_USERS[socket.id];
+      socket.broadcast.emit("user disconnected", userId);
+      delete CONNECTED_USERS[userId];
     });
   });
 });
