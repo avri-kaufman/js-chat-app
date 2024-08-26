@@ -33,9 +33,9 @@ app.post("/chat", (req, res) => {
   });
 });
 
-io.on("connection", (Socket) => {
-  Socket.on("chat message", (msg) => {
-    io.emit("chat message", msg);
+io.on("connection", (socket) => {
+  socket.on("chat message", (msg) => {
+    socket.broadcast.emit("chat message", msg);
   });
 });
 

@@ -25,13 +25,16 @@
       form.addEventListener("submit", function (e) {
         e.preventDefault();
         if (input.value) {
+          var item = document.createElement("li");
+          item.textContent = input.value;
+          messages.appendChild(item);
+          window.scrollTo(0, document.body.scrollHeight);
           socket.emit("chat message", input.value);
           input.value = "";
         }
       });
 
       socket.on("connected users", function (connectedUsersDict) {
-        console.log("conn hello");
         for (let userId in connectedUsersDict) {
           var item = document.createElement("li");
           item.setAttribute("id", userId.toString());
@@ -51,7 +54,6 @@
       socket.on("user connected", function (newUser) {
         let userId = newUser.id.toString();
         let userName = newUser.name.toString();
-        console.log(userId, userName);
         var item = document.createElement("li");
         item.setAttribute("id", userId);
         item.textContent = userName;
@@ -60,11 +62,10 @@
       });
 
       socket.on("user disconnected", function (userId) {
-        // var item = document.createElement("li");
-        // item.textContent = newUser.userId + " has left the room";
-        // messages.appendChild(item);
         var disconnectedUser = document.getElementById(userId);
-        disconnectedUser.parentNode.removeChild(disconnectedUser);
+        if (disconnectedUser) {
+          disconnectedUser.parentNode.removeChild(disconnectedUser);
+        }
         window.scrollTo(0, document.body.scrollHeight);
       });
     </script>
