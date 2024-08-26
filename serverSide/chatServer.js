@@ -22,7 +22,7 @@ app.post("/chat", (req, res) => {
 
   io.once("connection", (socket) => {
     let userId = socket.id;
-    socket.broadcast.emit("user connected", { userId: name });
+    socket.broadcast.emit("user connected", { id: userId, name: name });
     io.to(userId).emit("connected users", CONNECTED_USERS);
     CONNECTED_USERS[userId] = name;
 

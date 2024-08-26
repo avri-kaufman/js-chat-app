@@ -2,72 +2,7 @@
 <html>
   <head>
     <title>Chat app</title>
-    <!--T0DO: replace style tag with the css file by link tag  -->
-    <!-- <link rel="stylesheet" href="../style/style.css" /> -->
-    <style>
-      body {
-        margin: 0;
-        padding-bottom: 3rem;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-          Helvetica, Arial, sans-serif;
-      }
-
-      #form {
-        background: rgba(0, 0, 0, 0.15);
-        padding: 0.25rem;
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        display: flex;
-        height: 3rem;
-        box-sizing: border-box;
-        backdrop-filter: blur(10px);
-      }
-      #input {
-        border: none;
-        padding: 0 1rem;
-        flex-grow: 1;
-        border-radius: 2rem;
-        margin: 0.25rem;
-      }
-      #input:focus {
-        outline: none;
-      }
-      #form > button {
-        background: #333;
-        border: none;
-        padding: 0 1rem;
-        margin: 0.25rem;
-        border-radius: 3px;
-        outline: none;
-        color: #fff;
-      }
-
-      #messages {
-        list-style-type: none;
-        margin: 0;
-        padding: 0;
-      }
-      #messages > li {
-        padding: 0.5rem 1rem;
-      }
-      #messages > li:nth-child(odd) {
-        background: #efefef;
-      }
-      /*  */
-      #connectedUsers {
-        list-style-type: none;
-        margin: 0;
-        padding: 0;
-      }
-      #connectedUsers > li {
-        padding: 0.5rem 1rem;
-      }
-      #connectedUsers > li:nth-child(odd) {
-        background: #efefef;
-      }
-    </style>
+    <link type="text/css" href="/clientSide/style/style.css" />
   </head>
   <body>
     <h2>connected users</h2>
@@ -86,7 +21,6 @@
       var messages = document.getElementById("messages");
       var form = document.getElementById("form");
       var input = document.getElementById("input");
-      // let connectedUsersMap = {};
 
       form.addEventListener("submit", function (e) {
         e.preventDefault();
@@ -99,10 +33,9 @@
       socket.on("connected users", function (connectedUsersDict) {
         console.log("conn hello");
         for (let userId in connectedUsersDict) {
-          // let userName = connectedUsersDict[userId];
           var item = document.createElement("li");
-          item.setAttribute("id", userId);
-          item.textContent = connectedUsersDict.userId;
+          item.setAttribute("id", userId.toString());
+          item.textContent = connectedUsersDict[userId];
           connectedUsers.appendChild(item);
           window.scrollTo(0, document.body.scrollHeight);
         }
@@ -116,9 +49,12 @@
       });
 
       socket.on("user connected", function (newUser) {
+        let userId = newUser.id.toString();
+        let userName = newUser.name.toString();
+        console.log(userId, userName);
         var item = document.createElement("li");
         item.setAttribute("id", userId);
-        item.textContent = newUser.userId;
+        item.textContent = userName;
         connectedUsers.appendChild(item);
         window.scrollTo(0, document.body.scrollHeight);
       });
