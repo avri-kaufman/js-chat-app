@@ -22,6 +22,8 @@
       var form = document.getElementById("form");
       var input = document.getElementById("input");
 
+      let SOME_USER_TYPING_NOW = false;
+
       input.addEventListener("input", () => socket.emit("user typing"));
 
       form.addEventListener("submit", function (e) {
@@ -47,22 +49,26 @@
       });
 
       socket.on("user typing", function (data) {
-        let userId = newMsg.id;
-        let userName = newMsg.name;
-        let msg = newMsg.msg;
-        console.log(userId, userName, msg);
-        var item = document.createElement("li");
-        item.setAttribute("id", userId + "typing");
-        item.textContent = name + ": " + msg;
-        messages.appendChild(item);
-        window.scrollTo(0, document.body.scrollHeight);
-        setTimeout(() => {
-          typingMsg = document.getElementById(userId + "typing");
-          if (typingMsg) {
-            messages.removeChild(typingMsg);
-          }
+        let userId = data.id;
+        let userName = data.name;
+        let msg = data.msg;
+        while (!SOME_USER_TYPING_NOW) {
+          console.log(userId, userName, msg);
+          var item = document.createElement("li");
+          item.setAttribute("id", userId + "typing");
+          item.textContent = userName + ": " + msg;
+          messages.appendChild(item);
           window.scrollTo(0, document.body.scrollHeight);
-        }, 10000);
+          SOME_USER_TYPING_NOW = true;
+          setTimeout(() => {
+            typingMsg = document.getElementById(userId + "typing");
+            if (typingMsg) {
+              messages.removeChild(typingMsg);
+              SOME_USER_TYPING_NOW = false;
+            }
+            window.scrollTo(0, document.body.scrollHeight);
+          }, 1000);
+        }
       });
 
       socket.on("chat message", function (newMsg) {
