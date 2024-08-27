@@ -22,6 +22,8 @@
       var form = document.getElementById("form");
       var input = document.getElementById("input");
 
+      input.addEventListener("input", () => socket.emit("user typing"));
+
       form.addEventListener("submit", function (e) {
         e.preventDefault();
         if (input.value) {
@@ -44,9 +46,30 @@
         }
       });
 
-      socket.on("chat message", function (msg) {
+      socket.on("user typing", function (data) {
+        let userId = newMsg.id;
+        let userName = newMsg.name;
+        let msg = newMsg.msg;
+        console.log(userId, userName, msg);
         var item = document.createElement("li");
-        item.textContent = msg;
+        item.setAttribute("id", userId + "typing");
+        item.textContent = name + ": " + msg;
+        messages.appendChild(item);
+        window.scrollTo(0, document.body.scrollHeight);
+        setTimeout(() => {
+          typingMsg = document.getElementById(userId + "typing");
+          if (typingMsg) {
+            messages.removeChild(typingMsg);
+          }
+          window.scrollTo(0, document.body.scrollHeight);
+        }, 10000);
+      });
+
+      socket.on("chat message", function (newMsg) {
+        let name = newMsg.name;
+        let msg = newMsg.msg;
+        var item = document.createElement("li");
+        item.textContent = name + ": " + msg;
         messages.appendChild(item);
         window.scrollTo(0, document.body.scrollHeight);
       });

@@ -34,8 +34,19 @@ app.post("/chat", (req, res) => {
 });
 
 io.on("connection", (socket) => {
+  socket.on("user typing", () =>
+    socket.broadcast.emit("user typing", {
+      id: socket.id,
+      name: CONNECTED_USERS[socket.id],
+      msg: "typing...",
+    })
+  );
+
   socket.on("chat message", (msg) => {
-    socket.broadcast.emit("chat message", msg);
+    socket.broadcast.emit("chat message", {
+      name: CONNECTED_USERS[socket.id],
+      msg: msg,
+    });
   });
 });
 
